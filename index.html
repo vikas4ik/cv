@@ -11,22 +11,40 @@
     <button class="answerButton" onclick="location.href='thankyou.html'">
       Yes
     </button>
-    <button class="answerButton" id="noButton">I no no wanna o(╥﹏╥)o</button>
+    <button class="answerButton" id="maybeButton">
+    I will think about it 🤔
+    </button>
+    <button class="answerButton" id="noButton">I don't wanna o(╥﹏╥)o</button>
     <br />
     <img src="cat.gif" alt="cat asking question" class="responsive" />
 
     <script>
+      const yesButton = document.querySelector(
+        'button[onclick*="thankyou.html"]'
+      );
+
+      // NO → make Yes bigger
       document
         .getElementById("noButton")
         .addEventListener("click", function () {
-          var yesButton = document.querySelector(
-            'button[onclick*="thankyou.html"]'
-          );
-          var currentFontSize = parseInt(
+          const currentFontSize = parseInt(
             window.getComputedStyle(yesButton).fontSize
           );
-          yesButton.style.fontSize = currentFontSize + 10 + "px"; // Increase font size by 5px
+          yesButton.style.fontSize = currentFontSize + 10 + "px";
+        });
+
+      // MAYBE → make Yes smaller
+      document
+        .getElementById("maybeButton")
+        .addEventListener("click", function () {
+          const currentFontSize = parseInt(
+            window.getComputedStyle(maybeButton).fontSize
+          );
+          maybeButton.style.fontSize = currentFontSize - 1 + "px";
+          
         });
     </script>
+
+    
   </body>
 </html>
