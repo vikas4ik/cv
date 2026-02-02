@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>One Question</title>
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button {
+      padding: 16px 32px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 999px;
+      margin: 16px;
+    }
+
+    .yes {
+      background: linear-gradient(90deg, #6366F1, #22D3EE);
+      color: white;
+    }
+
+    .no {
+      background-color: #6B7280;
+      color: white;
+      position: absolute;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Will you be my Valentine?</h1>
+
+    <button class="yes" onclick="location.href='yes.html'">Yes</button>
+    <button class="no" id="noBtn">No</button>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+
+    function moveButton() {
+      const padding = 80;
+      const x = Math.random() * (window.innerWidth - padding);
+      const y = Math.random() * (window.innerHeight - padding);
+
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+    }
+
+    // Move on touch (mobile)
+    noBtn.addEventListener('touchstart', moveButton);
+
+    // Extra safety: move if finger gets close
+    document.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      const rect = noBtn.getBoundingClientRect();
+
+      const dx = touch.clientX - (rect.left + rect.width / 2);
+      const dy = touch.clientY - (rect.top + rect.height / 2);
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < 80) {
+        moveButton();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,51 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Vikas Singh</title>
-  <link rel="stylesheet" href="css/styles.css">
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Be My Valentine</title>
+    <link rel="stylesheet" href="css/valentine.css" />
+  </head>
+  <body>
+    <div id="valentineQuestion"><b>Will you be my valentine?</b></div>
+    <button class="answerButton" onclick="location.href='thankyou.html'">
+      Yes
+    </button>
+    <button class="answerButton" id="noButton">I no no wanna o(╥﹏╥)o</button>
+    <br />
+    <img src="cat.gif" alt="cat asking question" class="responsive" />
 
-<body>
-
-  <!-- HERO -->
-  <section class="section hero">
-    <img src="circle-cropped.png" class="avatar" alt="Profile picture">
-
-    <div>
-      <h1>Hi, I’m <span class="highlight">Vikas</span>.</h1>
-      <p>
-        Information Technology undergraduate at
-        <a href="https://www.aitpune.com/">Army Institute of Technology</a>.
-        Focused on building clean, reliable software.
-      </p>
-
-      <br>
-      <a class="btn" href="skills.html">Skills</a>
-      <a class="btn" href="contactme.html">Contact</a>
-    </div>
-  </section>
-
-  <!-- EDUCATION -->
-  <section class="section">
-    <div class="card">
-      <h3>Education</h3>
-      <p><strong>2019 – Present</strong><br>Information Technology</p>
-      <p><strong>2017</strong><br>10th Grade</p>
-    </div>
-  </section>
-
-  <!-- LINKS -->
-  <section class="section">
-    <div class="card">
-      <h3>Explore</h3>
-      <p>
-        <a href="skills.html">Skills</a> ·
-        <a href="hobbies.html">Interests</a> ·
-        <a href="secret.html">Secret</a>
-      </p>
-    </div>
-  </section>
-
-</body>
+    <script>
+      document
+        .getElementById("noButton")
+        .addEventListener("click", function () {
+          var yesButton = document.querySelector(
+            'button[onclick*="thankyou.html"]'
+          );
+          var currentFontSize = parseInt(
+            window.getComputedStyle(yesButton).fontSize
+          );
+          yesButton.style.fontSize = currentFontSize + 10 + "px"; // Increase font size by 5px
+        });
+    </script>
+  </body>
 </html>
