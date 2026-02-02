@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
 :root {
-  --bg: #F5F7FA;
-  --text-primary: #1F2937;
-  --text-secondary: #4B5563;
-  --accent: #2563EB;
-  --border: #D1D5DB;
+  --bg: #0F172A;
+  --card: #111827;
+  --text-main: #E5E7EB;
+  --text-muted: #9CA3AF;
+  --accent1: #6366F1;
+  --accent2: #22D3EE;
+  --border: #1F2937;
 }
 
 * {
@@ -14,54 +16,103 @@
 
 body {
   margin: 0;
-  padding: 40px;
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg);
-  color: var(--text-primary);
+  background: linear-gradient(120deg, var(--bg), #020617);
+  color: var(--text-main);
 }
 
+/* Layout */
+.section {
+  padding: 80px 10%;
+}
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Typography */
 h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 3rem;
+  margin: 0 0 12px;
 }
 
 h3 {
-  font-size: 1.2rem;
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
+  margin-top: 0;
+  font-size: 1.4rem;
 }
 
 p, li {
-  color: var(--text-secondary);
-  line-height: 1.6;
+  color: var(--text-muted);
+  line-height: 1.7;
 }
 
+/* Accent underline */
+.highlight {
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Links */
 a {
-  color: var(--accent);
+  color: #38BDF8;
   text-decoration: none;
-  font-weight: 500;
+  position: relative;
 }
 
-a:hover {
-  text-decoration: underline;
+a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  transition: width 0.3s ease;
 }
 
-hr {
-  border: none;
-  border-top: 1px solid var(--border);
-  margin: 40px 0;
+a:hover::after {
+  width: 100%;
 }
 
-table {
-  border-collapse: collapse;
-}
-
-td, th {
-  padding: 8px 16px;
-  text-align: left;
-}
-
-th {
-  color: var(--text-primary);
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  color: white;
   font-weight: 600;
+  margin-right: 16px;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Image */
+.avatar {
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  background: linear-gradient(var(--card), var(--card)) padding-box,
+              linear-gradient(90deg, var(--accent1), var(--accent2)) border-box;
 }
