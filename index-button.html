@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Click the Button</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; background-color: #f0f2f5; }
+        button { padding: 15px 30px; font-size: 1.2rem; cursor: pointer; border: none; border-radius: 8px; background: #007bff; color: white; transition: transform 0.1s; }
+        button:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <button id="secretBtn">Click me (0/5)</button>
+
+    <script>
+        let clicks = 0;
+        const btn = document.getElementById('secretBtn');
+
+        btn.addEventListener('click', () => {
+            clicks++;
+            btn.textContent = `Click me (${clicks}/5)`;
+            
+            if (clicks === 5) {
+                // Redirects to the next part
+                window.location.href = "couple.html";
+            }
+        });
+    </script>
+</body>
+</html>
