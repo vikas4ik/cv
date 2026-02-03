@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bring Us Together</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            background-color: #fff5e4;
+            font-family: "Courier", monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #instruction {
+            color: #ff9494;
+            font-size: 18px;
+            margin-top: 40px;
+            text-align: center;
+            padding: 0 20px;
+            line-height: 1.5;
+        }
+
+        .stage {
+            position: relative;
+            width: 100%;
+            flex-grow: 1;
+        }
+
+        .character {
+            position: absolute;
+            bottom: 120px;
+            font-size: 80px;
+            user-select: none;
+            z-index: 10;
+        }
+
+        #char1 { left: 10%; transition: left 0.1s linear; }
+        #char2 { right: 10%; transform: scaleX(-1); transition: right 0.1s linear; }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 30px;
+            box-sizing: border-box;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .hold-btn {
+            width: 80px;
+            height: 80px;
+            background-color: #ffe3e1;
+            border: 2px solid #ff9494;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 1px 3px 6px #ff9494;
+            touch-action: none;
+            cursor: pointer;
+        }
+
+        /* Active class for when keys are pressed or buttons are tapped */
+        .hold-btn.active {
+            background-color: #ff9494;
+            transform: scale(0.9);
+        }
+
+        @media (min-width: 800px) {
+            #instruction br { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="instruction">
+        <b>PC:</b> Hold Left & Right Arrows <br>
+        <b>Mobile:</b> Hold Both Hearts
+    </div>
+
+    <div class="stage">
+        <div id="char1" class="character">🏃‍♂️</div>
+        <div id="char2" class="character">🏃‍♀️</div>
+    </div>
+
+    <div class="controls">
+        <div id="btnLeft" class="hold-btn">❤️</div>
+        <div id="btnRight" class="hold-btn">❤️</div>
+    </div>
+
+    <script>
+        const char1 = document.getElementById('char1');
+        const char2 = document.getElementById('char2');
+        const btnLeft = document.getElementById('btnLeft');
+        const btnRight = document.getElementById('btnRight');
+
+        let leftActive = false;
+        let rightActive = false;
+        let pos = 10; 
+        let finished = false;
+
+        // --- KEYBOARD LOGIC (PC) ---
+        window.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowLeft") { leftActive = true; btnLeft.classList.add('active'); }
+            if (e.key === "ArrowRight") { rightActive = true; btnRight.classList.add('active'); }
+            checkAndMove();
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.key === "ArrowLeft") { leftActive = false; btnLeft.classList.remove('active'); }
+            if (e.key === "ArrowRight") { rightActive = false; btnRight.classList.remove('active'); }
+        });
+
+        // --- TOUCH/MOUSE LOGIC (Mobile & Click) ---
+        btnLeft.addEventListener('pointerdown', (e) => { leftActive = true; btnLeft.classList.add('active'); checkAndMove(); });
+        btnRight.addEventListener('pointerdown', (e) => { rightActive = true; btnRight.classList.add('active'); checkAndMove(); });
+        
+        window.addEventListener('pointerup', () => { 
+            leftActive = false; rightActive = false;
+            btnLeft.classList.remove('active');
+            btnRight.classList.remove('active');
+        });
+
+        function checkAndMove() {
+            if (leftActive && rightActive && !finished) {
+                moveLoop();
+            }
+        }
+
+        function moveLoop() {
+            if (!leftActive || !rightActive || finished) return;
+
+            pos += 0.8;
+            char1.style.left = pos + "%";
+            char2.style.right = pos + "%";
+
+            const gap = 100 - (pos * 2);
+            
+            if (gap <= 15) {
+                finishSequence();
+            } else {
+                requestAnimationFrame(moveLoop);
+            }
+        }
+
+        function finishSequence() {
+            finished = true;
+            char1.innerHTML = "👩‍❤️‍👨";
+            char2.style.display = "none";
+            char1.style.left = "50%";
+            char1.style.transform = "translateX(-50%)";
+
+            // Confetti Blast
+            var end = Date.now() + (3 * 1000);
+            (function frame() {
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff9494', '#ffffff'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff9494', '#ffffff'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+
+            setTimeout(() => { window.location.href = "gallery.html"; }, 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Memories</title>
+    <style>
+        :root {
+            --bg-color: #fdf2f2;
+            --card-bg: #ffffff;
+            --accent: #e91e63;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        h1 { color: var(--accent); margin-bottom: 10px; }
+        p { color: #666; font-style: bold; }
+
+        /* Responsive Grid */
+        .gallery-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .photo-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            animation: slideUp 0.8s ease forwards;
+            opacity: 0; /* Start hidden for animation */
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 30px rgba(233, 30, 99, 0.15);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Staggered animation for items */
+        .photo-item:nth-child(1) { animation-delay: 0.2s; }
+        .photo-item:nth-child(2) { animation-delay: 0.4s; }
+        .photo-item:nth-child(3) { animation-delay: 0.6s; }
+        .photo-item:nth-child(4) { animation-delay: 0.8s; }
+        .photo-item:nth-child(5) { animation-delay: 1.0s; }
+        .photo-item:nth-child(6) { animation-delay: 1.2s; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Every Moment Matters</h1>
+        <p>My BUBBBUUUUU is the prettiest!!!</p>
+    </header>
+
+    <div class="gallery-wrapper">
+        <div class="photo-item"><img src="1.jpg" alt="Memory 1"></div>
+        <div class="photo-item"><img src="2.jpg" alt="Memory 2"></div>
+        <div class="photo-item"><img src="3.jpg" alt="Memory 3"></div>
+        <div class="photo-item"><img src="4.jpg" alt="Memory 4"></div>
+        <div class="photo-item"><img src="5.jpg" alt="Memory 5"></div>
+        <div class="photo-item"><img src="6.jpg" alt="Memory 6"></div>
+    </div>
+
+</body>
+</html>

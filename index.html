@@ -5,46 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Be My Valentine</title>
     <link rel="stylesheet" href="css/valentine.css" />
+    <style>
+        /* This ensures the secret button matches your theme perfectly */
+        #secretBtn {
+            display: block;
+            margin: 20px auto;
+            /* Explicitly using your theme colors to override any browser defaults */
+            background-color: #ffe3e1; 
+            color: #e67373;
+            font-family: "Courier", monospace;
+            border: 2px solid #ffe3e1;
+            box-shadow: 1px 1px 2px #ff9494;
+        }
+
+        #secretBtn:hover {
+            background-color: #ff9494;
+            color: #ffe3e1;
+            border: 2px solid #ff9494;
+        }
+    </style>
   </head>
   <body>
     <div id="valentineQuestion"><b>Will you be my valentine?</b></div>
-    <button class="answerButton" onclick="location.href='thankyou.html'">
-      Yes
-    </button>
-    <button class="answerButton" id="maybeButton">
-    I will think about it 🤔
-    </button>
+    
+    <button class="answerButton" onclick="location.href='thankyou.html'">Yes</button>
+    <button class="answerButton" id="maybeButton">I will think about it 🤔</button>
     <button class="answerButton" id="noButton">I don't wanna o(╥﹏╥)o</button>
+    
     <br />
+    
     <img src="cat.gif" alt="cat asking question" class="responsive" />
 
+    <button id="secretBtn" class="answerButton">Click me (0/5)</button>
+
     <script>
-      const yesButton = document.querySelector(
-        'button[onclick*="thankyou.html"]'
-      );
+      // Existing Valentine Logic
+      const yesButton = document.querySelector('button[onclick*="thankyou.html"]');
+      const maybeButton = document.getElementById("maybeButton");
+      const noButton = document.getElementById("noButton");
 
-      // NO → make Yes bigger
-      document
-        .getElementById("noButton")
-        .addEventListener("click", function () {
-          const currentFontSize = parseInt(
-            window.getComputedStyle(yesButton).fontSize
-          );
-          yesButton.style.fontSize = currentFontSize + 10 + "px";
-        });
+      noButton.addEventListener("click", function () {
+        const currentFontSize = parseInt(window.getComputedStyle(yesButton).fontSize);
+        yesButton.style.fontSize = (currentFontSize + 10) + "px";
+      });
 
-      // MAYBE → make Yes smaller
-      document
-        .getElementById("maybeButton")
-        .addEventListener("click", function () {
-          const currentFontSize = parseInt(
-            window.getComputedStyle(maybeButton).fontSize
-          );
-          maybeButton.style.fontSize = currentFontSize - 1 + "px";
+      maybeButton.addEventListener("click", function () {
+        const currentFontSize = parseInt(window.getComputedStyle(maybeButton).fontSize);
+        if (currentFontSize > 5) {
+            maybeButton.style.fontSize = (currentFontSize - 2) + "px";
+        }
+      });
+
+      // Secret Redirect Logic
+      let clicks = 0;
+      const secretBtn = document.getElementById('secretBtn');
+
+      secretBtn.addEventListener('click', () => {
+          clicks++;
+          secretBtn.textContent = `Click me (${clicks}/5)`;
           
-        });
+          if (clicks === 5) {
+              window.location.href = "couple.html";
+          }
+      });
     </script>
-
-    
   </body>
 </html>
