@@ -6,16 +6,16 @@
     <title>Be My Valentine</title>
     <link rel="stylesheet" href="css/valentine.css" />
     <style>
-        /* This ensures the secret button matches your theme perfectly */
         #secretBtn {
             display: block;
-            margin: 20px auto;
-            /* Explicitly using your theme colors to override any browser defaults */
+            margin: 40px auto;
             background-color: #ffe3e1; 
             color: #e67373;
             font-family: "Courier", monospace;
             border: 2px solid #ffe3e1;
             box-shadow: 1px 1px 2px #ff9494;
+            font-style: italic; /* Added for a "whispered" look */
+            letter-spacing: 1px;
         }
 
         #secretBtn:hover {
@@ -36,10 +36,10 @@
     
     <img src="cat.gif" alt="cat asking question" class="responsive" />
 
-    <button id="secretBtn" class="answerButton">Click me (0/5)</button>
+    <button id="secretBtn" class="answerButton">A hidden story waits inside...</button>
 
     <script>
-      // Existing Valentine Logic
+      // Valentine logic remains the same
       const yesButton = document.querySelector('button[onclick*="thankyou.html"]');
       const maybeButton = document.getElementById("maybeButton");
       const noButton = document.getElementById("noButton");
@@ -56,13 +56,24 @@
         }
       });
 
-      // Secret Redirect Logic
+      // The Curious Secret Logic
       let clicks = 0;
       const secretBtn = document.getElementById('secretBtn');
+      const messages = [
+          "A hidden story waits inside...",
+          "Are you sure you want to see?",
+          "It's a long road ahead...",
+          "Almost there...",
+          "Unlocking the universe..."
+      ];
 
       secretBtn.addEventListener('click', () => {
           clicks++;
-          secretBtn.textContent = `Click me (${clicks}/5)`;
+          
+          if (clicks < 5) {
+              // Changes the text to something different on every click!
+              secretBtn.textContent = messages[clicks];
+          }
           
           if (clicks === 5) {
               window.location.href = "couple.html";
