@@ -3,171 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bring Us Together</title>
+    <title>Cosmic Attraction</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        :root { --bg: #fff5e4; --pink: #ff9494; --light-pink: #ffe3e1; }
+        
         body {
-            background-color: #fff5e4;
-            font-family: "Courier", monospace;
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
+            background-color: var(--bg); font-family: "Courier", monospace;
+            margin: 0; overflow: hidden; height: 100vh;
+            filter: grayscale(100%); transition: filter 0.5s linear;
+            display: flex; flex-direction: column;
         }
 
         #instruction {
-            color: #ff9494;
-            font-size: 18px;
-            margin-top: 40px;
-            text-align: center;
-            padding: 0 20px;
-            line-height: 1.5;
+            position: absolute; width: 100%; text-align: center;
+            top: 20px; color: var(--pink); font-weight: bold; z-index: 100;
         }
 
-        .stage {
-            position: relative;
-            width: 100%;
-            flex-grow: 1;
-        }
+        .universe { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
 
         .character {
-            position: absolute;
-            bottom: 120px;
-            font-size: 80px;
-            user-select: none;
-            z-index: 10;
+            position: absolute; font-size: 80px; user-select: none;
+            z-index: 20; transition: transform 0.1s ease-out;
+            filter: drop-shadow(0 0 15px rgba(255, 148, 148, 0.3));
         }
 
-        #char1 { left: 10%; transition: left 0.1s linear; }
-        #char2 { right: 10%; transform: scaleX(-1); transition: right 0.1s linear; }
+        /* Initial positions in opposite corners */
+        #char1 { top: 5%; left: 5%; transform: rotate(15deg); }
+        #char2 { bottom: 15%; right: 5%; transform: scaleX(-1) rotate(-15deg); }
+
+        #obstacle {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 100px; z-index: 15;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .obstacle-active { transform: translate(-50%, -50%) scale(1) !important; }
+
+        .trail-heart {
+            position: absolute; pointer-events: none;
+            animation: fadeOut 1.2s forwards; font-size: 25px;
+        }
+        @keyframes fadeOut { 
+            0% { transform: scale(1); opacity: 1; } 
+            100% { transform: scale(0.2); opacity: 0; } 
+        }
 
         .controls {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            padding: 30px;
-            box-sizing: border-box;
-            position: absolute;
-            bottom: 20px;
+            display: flex; justify-content: space-between; width: 100%;
+            padding: 25px; position: absolute; bottom: 0; box-sizing: border-box;
+            z-index: 110;
         }
-
         .hold-btn {
-            width: 80px;
-            height: 80px;
-            background-color: #ffe3e1;
-            border: 2px solid #ff9494;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-            box-shadow: 1px 3px 6px #ff9494;
-            touch-action: none;
-            cursor: pointer;
+            width: 85px; height: 85px; background: var(--light-pink);
+            border: 3px solid var(--pink); border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 32px; box-shadow: 0 5px 15px rgba(255,148,148,0.4);
+            touch-action: none; cursor: pointer;
         }
+        .hold-btn.active { background: var(--pink); transform: scale(0.85); box-shadow: 0 0 30px var(--pink); }
 
-        /* Active class for when keys are pressed or buttons are tapped */
-        .hold-btn.active {
-            background-color: #ff9494;
-            transform: scale(0.9);
-        }
-
-        @media (min-width: 800px) {
-            #instruction br { display: none; }
-        }
+        #flash { position: fixed; inset: 0; background: white; opacity: 0; pointer-events: none; z-index: 1000; }
     </style>
 </head>
 <body>
 
-    <div id="instruction">
-        <b>PC:</b> Hold Left & Right Arrows <br>
-        <b>Mobile:</b> Hold Both Hearts
-    </div>
+<div id="flash"></div>
+<div id="instruction">HOLD BOTH HEARTS TO MOVE TOWARD EACH OTHER</div>
 
-    <div class="stage">
-        <div id="char1" class="character">🏃‍♂️</div>
-        <div id="char2" class="character">🏃‍♀️</div>
-    </div>
+<div class="universe" id="stage">
+    <div id="obstacle">🧱</div>
+    <div id="char1" class="character">🏃‍♂️</div>
+    <div id="char2" class="character">🏃‍♀️</div>
+</div>
 
-    <div class="controls">
-        <div id="btnLeft" class="hold-btn">❤️</div>
-        <div id="btnRight" class="hold-btn">❤️</div>
-    </div>
+<div class="controls">
+    <div id="btnLeft" class="hold-btn">❤️</div>
+    <div id="btnRight" class="hold-btn">❤️</div>
+</div>
 
-    <script>
-        const char1 = document.getElementById('char1');
-        const char2 = document.getElementById('char2');
-        const btnLeft = document.getElementById('btnLeft');
-        const btnRight = document.getElementById('btnRight');
+<script>
+    const char1 = document.getElementById('char1'), char2 = document.getElementById('char2');
+    const obstacle = document.getElementById('obstacle'), stage = document.getElementById('stage');
+    const instr = document.getElementById('instruction'), flash = document.getElementById('flash');
+    
+    let leftActive = false, rightActive = false, progress = 0, finished = false;
+    let obstacleActive = false, obstacleCleared = 0;
+    const obstacles = ["🧱", "⛈️", "🌊", "🌋"];
 
-        let leftActive = false;
-        let rightActive = false;
-        let pos = 10; 
-        let finished = false;
+    // PC Keys
+    window.addEventListener('keydown', (e) => {
+        if (e.key === "ArrowLeft") { leftActive = true; document.getElementById('btnLeft').classList.add('active'); }
+        if (e.key === "ArrowRight") { rightActive = true; document.getElementById('btnRight').classList.add('active'); }
+        if (e.key === " " && obstacleActive) clearObstacle();
+        run();
+    });
+    window.addEventListener('keyup', (e) => {
+        if (e.key === "ArrowLeft") { leftActive = false; document.getElementById('btnLeft').classList.remove('active'); }
+        if (e.key === "ArrowRight") { rightActive = false; document.getElementById('btnRight').classList.remove('active'); }
+    });
 
-        // --- KEYBOARD LOGIC (PC) ---
-        window.addEventListener('keydown', (e) => {
-            if (e.key === "ArrowLeft") { leftActive = true; btnLeft.classList.add('active'); }
-            if (e.key === "ArrowRight") { rightActive = true; btnRight.classList.add('active'); }
-            checkAndMove();
+    // Mobile/Pointer
+    document.querySelectorAll('.hold-btn').forEach(btn => {
+        btn.addEventListener('pointerdown', () => {
+            if(btn.id === 'btnLeft') leftActive = true; else rightActive = true;
+            btn.classList.add('active'); run();
         });
+    });
+    window.addEventListener('pointerup', () => {
+        leftActive = false; rightActive = false;
+        document.querySelectorAll('.hold-btn').forEach(b => b.classList.remove('active'));
+    });
 
-        window.addEventListener('keyup', (e) => {
-            if (e.key === "ArrowLeft") { leftActive = false; btnLeft.classList.remove('active'); }
-            if (e.key === "ArrowRight") { rightActive = false; btnRight.classList.remove('active'); }
-        });
+    // Click anywhere to clear obstacle on mobile
+    stage.addEventListener('pointerdown', () => { if(obstacleActive) clearObstacle(); });
 
-        // --- TOUCH/MOUSE LOGIC (Mobile & Click) ---
-        btnLeft.addEventListener('pointerdown', (e) => { leftActive = true; btnLeft.classList.add('active'); checkAndMove(); });
-        btnRight.addEventListener('pointerdown', (e) => { rightActive = true; btnRight.classList.add('active'); checkAndMove(); });
-        
-        window.addEventListener('pointerup', () => { 
-            leftActive = false; rightActive = false;
-            btnLeft.classList.remove('active');
-            btnRight.classList.remove('active');
-        });
+    function createTrail(x, y) {
+        const h = document.createElement('div');
+        h.className = 'trail-heart'; h.innerHTML = '❤️';
+        h.style.left = x + 'px'; h.style.top = y + 'px';
+        stage.appendChild(h);
+        setTimeout(() => h.remove(), 1200);
+    }
 
-        function checkAndMove() {
-            if (leftActive && rightActive && !finished) {
-                moveLoop();
-            }
-        }
+    function clearObstacle() {
+        obstacleActive = false;
+        obstacle.classList.remove('obstacle-active');
+        obstacleCleared++;
+        instr.innerHTML = "OBSTACLE DESTROYED! KEEP GOING!";
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.5 }, colors: ['#ff9494'] });
+    }
 
-        function moveLoop() {
-            if (!leftActive || !rightActive || finished) return;
-
-            pos += 0.8;
-            char1.style.left = pos + "%";
-            char2.style.right = pos + "%";
-
-            const gap = 100 - (pos * 2);
+    function run() {
+        if (leftActive && rightActive && !finished && !obstacleActive) {
+            progress += 0.3; // Journey speed
             
-            if (gap <= 15) {
-                finishSequence();
-            } else {
-                requestAnimationFrame(moveLoop);
+            // Move Char 1 (Top-Left -> Center)
+            let x1 = 5 + (progress * 0.45);
+            let y1 = 5 + (progress * 0.45);
+            char1.style.left = x1 + "%";
+            char1.style.top = y1 + "%";
+
+            // Move Char 2 (Bottom-Right -> Center)
+            let x2 = 5 + (progress * 0.45);
+            let y2 = 15 + (progress * 0.35);
+            char2.style.right = x2 + "%";
+            char2.style.bottom = y2 + "%";
+
+            // Color bloom based on progress (max 50)
+            document.body.style.filter = `grayscale(${100 - (progress * 2)}%)`;
+
+            // Spawning Obstacles
+            if (obstacleCleared === 0 && progress > 15) spawnObstacle();
+            if (obstacleCleared === 1 && progress > 30) spawnObstacle();
+            if (obstacleCleared === 2 && progress > 42) spawnObstacle();
+
+            // Create Heart Trails
+            const rect1 = char1.getBoundingClientRect();
+            const rect2 = char2.getBoundingClientRect();
+            if(Math.random() > 0.7) {
+                createTrail(rect1.left + 40, rect1.top + 40);
+                createTrail(rect2.left + 40, rect2.top + 40);
             }
+
+            if (progress >= 50) finish();
+            else requestAnimationFrame(run);
         }
+    }
 
-        function finishSequence() {
-            finished = true;
-            char1.innerHTML = "👩‍❤️‍👨";
-            char2.style.display = "none";
-            char1.style.left = "50%";
-            char1.style.transform = "translateX(-50%)";
+    function spawnObstacle() {
+        obstacleActive = true;
+        obstacle.innerHTML = obstacles[obstacleCleared];
+        obstacle.classList.add('obstacle-active');
+        instr.innerHTML = "LIFE GOT IN THE WAY! TAP/SPACE TO BREAK IT!";
+    }
 
-            // Confetti Blast
-            var end = Date.now() + (3 * 1000);
-            (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff9494', '#ffffff'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff9494', '#ffffff'] });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
-
-            setTimeout(() => { window.location.href = "gallery.html"; }, 3000);
-        }
-    </script>
+    function finish() {
+        finished = true;
+        char1.innerHTML = "👩‍❤️‍👨"; char2.style.display = "none";
+        char1.style.left = "50%"; char1.style.top = "50%";
+        char1.style.transform = "translate(-50%, -50%) scale(1.5)";
+        
+        flash.style.opacity = "1"; flash.style.transition = "opacity 0.8s";
+        confetti({ particleCount: 300, spread: 100, origin: { y: 0.5 } });
+        
+        setTimeout(() => window.location.href = "gallery.html", 2500);
+    }
+</script>
 </body>
 </html>
